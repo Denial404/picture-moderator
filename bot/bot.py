@@ -3,9 +3,10 @@ import os
 
 import discord
 from discord.ext import commands
+from bot_request import BotRequest
 
 client = commands.Bot(command_prefix='pp ', case_insensitive=True, help_command=None)
-
+client.add_cog(BotRequest(client))
 
 @client.event
 async def on_ready():
