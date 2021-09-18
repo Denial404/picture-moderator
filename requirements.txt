@@ -1,0 +1,5 @@
+pytesseract~=0.3.8
+nltk~=3.6.2
+requests~=2.26.0
+Flask~=2.0.1
+NudeNet~=2.0.6
