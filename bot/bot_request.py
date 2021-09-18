@@ -1,5 +1,7 @@
 import json
+from PIL import Image
 import requests
+from io import BytesIO
 
 import discord
 from discord.ext import commands
@@ -21,3 +23,13 @@ class BotRequest(commands.Cog):
         async with ctx.typing():
             a = self.get_request()
         await ctx.send(a)
+
+    @commands.command(name='ppp')
+    async def ppp(self, ctx):
+        async with ctx.typing():
+            url = ctx.message.attachments[0].url
+            print(url)
+            response = requests.get(url)
+            img = Image.open(BytesIO(response.content))
+            img.save('picture.png')
+        await ctx.send(url)
