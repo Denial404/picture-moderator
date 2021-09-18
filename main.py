@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 app = Flask(__name__)
 
 @app.route("/", methods=["GET"])
-def nudeNet(): 
+def home(): 
   return "what's good"
   
 @app.route("/nude-net", methods=["GET"])
@@ -27,4 +27,4 @@ def nudeNet():
 
 if __name__ == "__main__":
   # initialize detector (downloads the checkpoint file automatically the first time)
-  app.run(debug=True)
+  app.run(port=8080, debug=True)
