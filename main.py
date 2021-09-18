@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET"])
 def nudeNet(): 
   return "what's good"
-  z
+  
 @app.route("/nude-net", methods=["GET"])
 def nudeNet(): 
   image = "./jackblack.png"
