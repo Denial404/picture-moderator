@@ -2,6 +2,10 @@ import json
 from PIL import Image
 import requests
 from io import BytesIO
+from nudenet import NudeDetector
+from nudenet import NudeClassifier
+from flask import jsonify
+import censoring as cen
 
 import discord
 from discord.ext import commands
@@ -26,10 +30,20 @@ class BotRequest(commands.Cog):
 
     @commands.command(name='ppp')
     async def ppp(self, ctx):
+        await ctx.channel.purge(limit=1)
         async with ctx.typing():
             url = ctx.message.attachments[0].url
-            print(url)
+            #print(url)
             response = requests.get(url)
             img = Image.open(BytesIO(response.content))
-            img.save('picture.png')
+            imagePath = "nsfw.png"
+            img.save(imagePath)
+
+            detector = NudeDetector('base')  # detector = NudeDetector('base') for the "base" version of detector.
+            detector = detector.detect(imagePath)
+            classifier = NudeClassifier()
+            pokemon = classifier.classify(imagePath)
+
+            print(cen.censorImage(detector, imagePath, ""))
+
         await ctx.send(url)

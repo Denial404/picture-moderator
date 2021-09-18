@@ -23,9 +23,9 @@ def censorImage(nudeResults, nsfwImagePath, sfwImagePath = ""):
     nudeAreas = getNudeAreas(nudeResults)
 
     with Image.open(nsfwImagePath) as img:
+        draw = ImageDraw.Draw(img)
         for nudeArea in nudeAreas:
             if (sfwImagePath == ""):
-                draw = ImageDraw.Draw(img)
                 draw.rectangle([nudeArea.x_min, nudeArea.y_min, nudeArea.x_max, nudeArea.y_max], '#0f0f0f80', '#0f0f0f80', 2)
 
             else:
