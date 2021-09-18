@@ -2,7 +2,6 @@
 from nudenet import NudeDetector
 from nudenet import NudeClassifier
 from flask import Flask, request, jsonify
-
 import text_analysis as ta
 import censoring as cen
 
@@ -14,8 +13,8 @@ def home():
 
 @app.route("/nude-net", methods=["GET"])
 def nude_net():
-    image = "./jackblack.png"
-    detector = NudeDetector() # detector = NudeDetector('base') for the "base" version of detector.
+    image = "./server/test.jpeg"
+    detector = NudeDetector('base') # detector = NudeDetector('base') for the "base" version of detector.
     detector = detector.detect(image)
     classifier = NudeClassifier()
     pokemon = classifier.classify(image)
@@ -23,8 +22,7 @@ def nude_net():
     jsonResult = jsonify({"detector": detector, "classifier": pokemon})
 
     print(cen.censorImage(detector, image, ""))
-
-    return jsonify({"detector": detector, "classifier": pokemon})
+    return jsonResult
 
 @app.route("/analyze-text", methods=["GET"])
 def analyze_text():
