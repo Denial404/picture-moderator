@@ -15,7 +15,7 @@ def home():
   
 @app.route("/nude-net", methods=["GET"])
 def nudeNet(): 
-  image = "./jackblack.png"
+  image = "./test/jackblack.png"
   detector = NudeDetector() # detector = NudeDetector('base') for the "base" version of detector.
   detector = detector.detect(image)
   classifier = NudeClassifier()
