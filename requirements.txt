@@ -1,6 +1,6 @@
-pytesseract~=0.3.8
 nltk~=3.6.2
 requests~=2.26.0
 Flask~=2.0.1
 NudeNet~=2.0.6
 discord.py~=1.7.3
+google-cloud-vision==2.4.2
