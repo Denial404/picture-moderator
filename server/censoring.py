@@ -1,5 +1,6 @@
 from PIL import Image, ImageDraw
-import sys
+from nudenet import NudeDetector
+from nudenet import NudeClassifier
 
 class NudeArea:
     def __init__(self, bounds, label, score):
@@ -19,7 +20,12 @@ def getNudeAreas(nudeResults):
 
     return nudeAreas
 
-def censorImage(nudeResults, nsfwImagePath, sfwImagePath = ""):
+def censorImage(nsfwImagePath, sfwImagePath = ""):
+    detector = NudeDetector('base')  # detector = NudeDetector('base') for the "base" version of detector.
+    nudeResults = detector.detect(nsfwImagePath)
+    classifier = NudeClassifier()
+    pokemon = classifier.classify(nsfwImagePath)
+
     nudeAreas = getNudeAreas(nudeResults)
 
     with Image.open(nsfwImagePath) as img:

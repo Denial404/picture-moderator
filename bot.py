@@ -1,4 +1,4 @@
-from server import ping
+from server import server_start
 import os
 
 import discord
@@ -36,6 +36,6 @@ async def test(ctx):
 
 
 # run
-ping()
+server_start()
 
 client.run(os.getenv('BOT_TOKEN'))
