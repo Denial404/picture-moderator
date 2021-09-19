@@ -3,7 +3,7 @@ from threading import Thread
 from main_bot import client
 # external functions
 from server.ocr import detect_text_uri
-import server.censoring as cen
+import server.text_analysis as ta
 
 import os
 
@@ -20,12 +20,18 @@ def ocr():
 
 @app.route('/pic-analysis', methods=["GET"])
 def pic_analysis():
-    url = request.args.get("nsfw-url", None)
+    url = request.args.get("url", None)
     return url
 
-@app.route('/sent_analysis', methods=["GET"])
-def sent_analysis():
-    pass
+
+@app.route("/analyze-text", methods=["GET"])
+def analyze_text():
+    text = request.args.get('text')
+    analysis = {
+        'text': text,
+        'scores': ta.sentiment(text)
+    }
+    return jsonify({'analysis': analysis})
 
 
 if __name__ == "__main__":
