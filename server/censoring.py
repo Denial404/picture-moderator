@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 import sys
 
-class NudeArea:
+class NsfwArea:
     def __init__(self, bounds, label, score):
         self.y_min = bounds[0]
         self.x_min = bounds[1]
@@ -10,26 +10,32 @@ class NudeArea:
         self.label = label
         self.score = score
 
-def getNudeAreas(nudeResults):
-    nudeAreas = []
-    for nudeResult in nudeResults:
-        nudeAreas.append(NudeArea(nudeResult["box"],
-                                  nudeResult["label"],
-                                  nudeResult["score"]))
+def getNsfwAreas(nudeResults):
+    nsfwAreas = []
+    for nsfwArea in nudeResults:
+        nsfwAreas.append(NsfwArea(nsfwArea["box"],
+                                  nsfwArea["label"],
+                                  nsfwArea["score"]))
 
-    return nudeAreas
+    return nsfwAreas
 
-def censorImage(nudeResults, nsfwImagePath, sfwImagePath = ""):
-    nudeAreas = getNudeAreas(nudeResults)
+def censorImage(results, nsfwImagePath, sfwImagePath = ""):
+    nsfwAreas = getNsfwAreas(results)
 
     with Image.open(nsfwImagePath) as img:
-        for nudeArea in nudeAreas:
+        draw = ImageDraw.Draw(img)
+        for nsfwArea in nsfwAreas:
             if (sfwImagePath == ""):
-                draw = ImageDraw.Draw(img)
-                draw.rectangle([nudeArea.x_min, nudeArea.y_min, nudeArea.x_max, nudeArea.y_max], '#0f0f0f80', '#0f0f0f80', 2)
-
+                draw.rectangle([nsfwArea.x_min, nsfwArea.y_min, nsfwArea.x_max, nsfwArea.y_max], '#0f0f0f80', '#0f0f0f80', 2)
             else:
-                print("hello")
+                sfwImage = Image.open(sfwImagePath)
+
+                size = nsfwArea.x_max - nsfwArea.x_min, nsfwArea.y_max - nsfwArea.y_min
+                sfwImage.resize(size)
+
+                offset = nsfwArea.x_min, nsfwArea.y_min
+
+                img.paste(sfwImage, offset)
 
     x = nsfwImagePath.split("/")
     del x[-1]
