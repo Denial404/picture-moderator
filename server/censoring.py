@@ -4,10 +4,10 @@ from nudenet import NudeClassifier
 
 class NudeArea:
     def __init__(self, bounds, label, score):
-        self.y_min = bounds[0]
-        self.x_min = bounds[1]
-        self.y_max = bounds[2]
-        self.x_max = bounds[3]
+        self.y_min = bounds[1]
+        self.x_min = bounds[0]
+        self.y_max = bounds[3]
+        self.x_max = bounds[2]
         self.label = label
         self.score = score
 
@@ -21,10 +21,10 @@ def getNudeAreas(nudeResults):
     return nudeAreas
 
 def censorImage(nsfwImagePath, sfwImagePath = ""):
-    detector = NudeDetector('base')  # detector = NudeDetector('base') for the "base" version of detector.
+    detector = NudeDetector() # detector = NudeDetector('base') for the "base" version of detector.
     nudeResults = detector.detect(nsfwImagePath)
-    classifier = NudeClassifier()
-    pokemon = classifier.classify(nsfwImagePath)
+    #classifier = NudeClassifier()
+    #pokemon = classifier.classify(nsfwImagePath)
 
     nudeAreas = getNudeAreas(nudeResults)
 

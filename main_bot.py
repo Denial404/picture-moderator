@@ -2,9 +2,6 @@ import os
 import discord
 from discord.ext import commands
 from bot_request import BotRequest
-from dotenv import load_dotenv
-
-load_dotenv()
 
 client = commands.Bot(command_prefix='pp ', case_insensitive=True, help_command=None)
 client.add_cog(BotRequest(client))
@@ -36,10 +33,6 @@ async def test(ctx):
     await ctx.send('test')
 
 # run
-def bot_start():
+if __name__ == "__main__":
     print("hi", os.getenv('BOT_TOKEN'))
     client.run(os.getenv('BOT_TOKEN'))
-
-if __name__ == "__main__":
-    bot_start()
-

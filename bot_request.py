@@ -26,10 +26,10 @@ class BotRequest(commands.Cog):
         await ctx.send(pic_info)
 
     @commands.command(name='ppp')
-    async def ppp(self, ctx):
+    async def ppp(self, ctx, link=None):
         await ctx.channel.purge(limit=1)
         async with ctx.typing():
-            url = ctx.message.attachments[0].url
+            url = link if link else ctx.message.attachments[0].url
             #print(url)
             # get image data
             response = requests.get(url)
@@ -38,12 +38,7 @@ class BotRequest(commands.Cog):
             # save nsfw image
             img.save(imagePath)
 
-            detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
-            detector = detector.detect(imagePath)
-            #classifier = NudeClassifier()
-            #print(1)
-            #pokemon = classifier.classify(imagePath)
-            sfw_path = cen.censorImage(detector, imagePath, "")
+            sfw_path = cen.censorImage(imagePath, "")
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)
