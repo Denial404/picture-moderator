@@ -72,7 +72,9 @@ class BotRequest(commands.Cog):
 
     def get_request(self, url):
         # server url
+        print("URL", url)
         res = requests.get(url)
+   
         res_content = res.json()
         print("GET_REQUEST", res_content)
         return res_content
@@ -100,10 +102,6 @@ class BotRequest(commands.Cog):
             # print(ocr_text, ocr_words)
             # print(req2)
 
-            #req = self.get_request(f"http://127.0.0.1:5000/ocr?url={url}")
-            #ocr_text = req["text"]
-            #ocr_words = req["words"]
-            #print(ocr_text, ocr_words)
             req = {
                 "text": {
                     "description": "Fuck this shitty ass game bro this jungler is so bad look\nat him man going from blue buff to red buff to krugs to\nraptors to wolves gromp permafarming stupid ass kid\n",
@@ -223,6 +221,7 @@ class BotRequest(commands.Cog):
             for ocr_word in ocr_words:
                 if profanity.contains_profanity(ocr_word["description"]):
                     ocrResults.append(ocr_word)
+                    print("POGGERS")
 
             ### img analysis
             # get image data
@@ -231,12 +230,13 @@ class BotRequest(commands.Cog):
             nsfwImagePath = "nsfw.png"
             # save nsfw image
             img.save(nsfwImagePath)
-            sfwImagePath = "cross.png"
+            sfwImagePath = "duck.png"
 
-            sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
-            
-            if len(ocrResults) == 0:
+            sfw_path = self.get_request(f'http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
+
+            if len(ocrResults) != 0:
                 sfw_path = censorImage(ocrResults, sfw_path, sfwImagePath, False)
+                print("PENIS")
 
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)

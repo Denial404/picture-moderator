@@ -31,7 +31,9 @@ def pic_analysis(detector_json):
     if detector_json is None:
         detector_json = detector.detect(nsfw_path)
     else:
-        detector_json = json.loads(detector_json)
+        detector_json = json.loads(detector_json)["data"]
+        
+    print("DETECTOR JSON", detector_json)
     result_path = cen.censorImage(detector_json, nsfw_path, sfw_path)
     print("PIC-ANALYSIS", jsonify({"path": result_path}))
     return jsonify({"path": result_path})
@@ -50,4 +52,6 @@ def analyze_text():
 
 if __name__ == "__main__":
     # gunicorn will not access this
+    nltk.downloader.download('vader_lexicon')
+    nltk.downloader.download('stopwords')
     app.run(debug=True)
