@@ -21,7 +21,7 @@ class BotRequest(commands.Cog):
         res_content = res.json()
         return res_content
 
-        
+
     @commands.command(name='info', aliases=['pp', 'pipo'])
     async def info(self, ctx):
         async with ctx.typing():
@@ -66,4 +66,22 @@ class BotRequest(commands.Cog):
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)
+            # setup embed
+            embed = discord.Embed(title='Photo Police', colour=0xf6dae4)
+            embed.set_author(name=f'{ctx.author.display_name}')
+            # positive
+            if text_info['analysis']['scores']['pos'] >= 60:
+                embed.add_field(name='Positivity',
+                            value='✅')
+            else:
+                embed.add_field(name='Positivity',
+                                value='❌')
+            # profanity
+            if Bool(text_info['analysis']['profanity']):
+                embed.add_field(name='Profanity',
+                                value='✅')
+            else:
+                embed.add_field(name='Profanity',
+                                value='❌')
+            await ctx.send(embed)
 

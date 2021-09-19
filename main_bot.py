@@ -2,10 +2,10 @@ import os
 import discord
 from discord.ext import commands
 from bot_request import BotRequest
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from pprint import pprint
 
-load_dotenv()
+# load_dotenv()
 
 client = commands.Bot(command_prefix='pp ', case_insensitive=True, help_command=None)
 client.add_cog(BotRequest(client))
@@ -35,6 +35,7 @@ async def on_message(message):
         return
     
     ctx = await client.get_context(message)
+    '''
     if len(message.attachments) > 0: 
         for i, v in enumerate(message.attachments):
             # get suffix 
@@ -48,7 +49,7 @@ async def on_message(message):
     if imageChecker(message.content):
         br = client.get_cog('BotRequest')
         await br.image_analyze(ctx, message.content)
-
+'''
     # 
     # await message.channel.send("don't send bad stuff ;) ;)")
     # resume bot (DO NOT DELETE)
