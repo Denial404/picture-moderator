@@ -76,7 +76,7 @@ def pic_analysis(nsfw_path, sfw_path):
 def classifyImage(url):
     classifier = NudeClassifier()
     result = classifier.classify(url)
-
+    print("CLASSIFIER", result)
     return result["nsfw.png"]["safe"]
 
 
@@ -118,7 +118,7 @@ class BotRequest(commands.Cog):
             try:
                 text_info = self.get_request(f"{site}analyze-text?text={ocr_text['description']}")
             except:
-                print("penis")
+                print("ERRORRRR AT SENTIENT ANALYSIS")
 
             ocrResults = []
             for ocr_word in ocr_words:
@@ -151,22 +151,12 @@ class BotRequest(commands.Cog):
 
             # classifier
             sfw_level = classifyImage(nsfwImagePath)
-            print("CLASSIFIER", sfw_level)
 
             try:                
-                # if text_info['analysis']['scores']['pos'] >= 60:
-                #     embed.add_field(name='Positivity',
-                #                 value='✅',
-                #                 inline=True)
-                # else:
-                #     embed.add_field(name='Positivity',
-                #                     value='❌',
-                #                     inline=True)
-                # profanity
                 value = "⭐"   
                 value = value + value * round(sfw_level * 10 // 2)
 
-                embed.add_field(name='SFW Rating',
+                embed.add_field(name='Image SFW',
                                 value=value,
                                 inline=True)
                 if bool(text_info['analysis']['profanity']):
@@ -177,8 +167,17 @@ class BotRequest(commands.Cog):
                     embed.add_field(name='Profanity?',
                                     value='👌',
                                     inline=True)
+
+                if text_info['analysis']['scores']['neg'] >= 60 or bool(text_info['analysis']['profanity']):
+                    embed.add_field(name='Text Positivity',
+                                value='😔',
+                                inline=True)
+                else:
+                    embed.add_field(name='Text Positivity',
+                                    value='😊',
+                                    inline=False)
             except:
-                print("penis")
+                print('ERRORREEROROR AT EMVED ADD FIELD')
 
             await ctx.send(embed=embed)
 
