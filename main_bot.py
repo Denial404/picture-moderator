@@ -1,8 +1,9 @@
 import os
 import discord
 from discord.ext import commands
-from bot.bot_request import BotRequest
+from bot_request import BotRequest
 from dotenv import load_dotenv
+
 load_dotenv()
 
 client = commands.Bot(command_prefix='pp ', case_insensitive=True, help_command=None)
