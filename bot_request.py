@@ -232,8 +232,7 @@ class BotRequest(commands.Cog):
             # save nsfw image
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
-            ocrDict = {"data": ocrResults}
-
+            
             if len(ocrResults) == 0:
                 sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
             else:
