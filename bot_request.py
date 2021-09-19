@@ -5,7 +5,7 @@ from io import BytesIO
 from nudenet import NudeDetector
 from nudenet import NudeClassifier
 import server.censoring as cen
-
+import discord
 from discord.ext import commands
 
 
@@ -37,11 +37,13 @@ class BotRequest(commands.Cog):
             imagePath = "nsfw.png"
             img.save(imagePath)
 
-            detector = NudeDetector('base')  # detector = NudeDetector('base') for the "base" version of detector.
+            detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
             detector = detector.detect(imagePath)
-            classifier = NudeClassifier()
-            pokemon = classifier.classify(imagePath)
+            #classifier = NudeClassifier()
+            #print(1)
+            #pokemon = classifier.classify(imagePath)
+            sfw_path = cen.censorImage(detector, imagePath, "")
+            with open(sfw_path, "rb") as fh:
+                f = discord.File(fh, filename=sfw_path)
+            await ctx.send(file=f)
 
-            print(cen.censorImage(detector, imagePath, ""))
-
-        await ctx.send(url)

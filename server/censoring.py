@@ -33,7 +33,7 @@ def censorImage(nudeResults, nsfwImagePath, sfwImagePath = ""):
 
     x = nsfwImagePath.split("/")
     del x[-1]
-    censoredImagePath = "/".join(x) + "/sfw_" + nsfwImagePath.split("/")[-1]
+    censoredImagePath = "sfw_" + nsfwImagePath
 
     img.save(censoredImagePath)
 

@@ -1,4 +1,4 @@
-from server import ping
+from main import ping
 import os
 
 import discord
