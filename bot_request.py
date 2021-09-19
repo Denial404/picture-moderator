@@ -35,6 +35,7 @@ class BotRequest(commands.Cog):
             url = link if link else ctx.message.attachments[0].url
 
             ### text analysis
+            print(f"{os.getenv('SERVER_URL')}?url={url}")
             ocr_text = self.get_request(f"{os.getenv('SERVER_URL')}?url={url}")
             text_info = self.get_request(f"{os.getenv('SERVER_URL')}?text={ocr_text}")
             print(text_info)

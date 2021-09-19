@@ -8,17 +8,37 @@ def detect_text_uri(uri):
     image = vision.Image()
     image.source.image_uri = uri
 
+
+    # {
+    #   text: { 1st thing}
+    #    words: [{}{}{}{}]
+    # }
+
     response = client.text_detection(image=image)
     texts = response.text_annotations
     # print('Texts:')
-    result = []
-    for text in texts:
-        obj = {}
-        vertices = []
-        for vertex in text.bounding_poly.vertices:
-            vertices.append((vertex.x, vertex.y))
-        obj[text.description] = vertices
-        result.append(obj)
+    result = {"text": {}, "words": []}
+    for i,text in enumerate(texts):
+        if i == 0: 
+            obj = {}
+            obj[text.description] = []
+            for vertex in text.bounding_poly.vertices:
+                obj[text.description].append((vertex.x, vertex.y))
+            result["text"] = obj
+        else:
+            obj = {}
+            obj[text.description] = []
+            for vertex in text.bounding_poly.vertices:
+                obj[text.description].append((vertex.x, vertex.y))
+            result["words"].append(obj)
+        
+    # for text in texts:
+    #     obj = {}
+    #     vertices = []
+    #     for vertex in text.bounding_poly.vertices:
+    #         vertices.append((vertex.x, vertex.y))
+    #     obj[text.description] = vertices
+    #     result.append(obj)
 
     if response.error.message:
         raise Exception(
@@ -26,7 +46,7 @@ def detect_text_uri(uri):
             'https://cloud.google.com/apis/design/errors'.format(
                 response.error.message))
                     
-    print(json.dumps(result, indent = 2))
+    # print(json.dumps(result, indent = 2))
     return result
     
 if __name__ == '__main__':
