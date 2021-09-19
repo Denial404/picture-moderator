@@ -18,6 +18,7 @@ class BotRequest(commands.Cog):
     def get_request(self, url):
         # server url
         res = requests.get(url)
+        print(res)
         res_content = json.loads(res.content)
         return res_content
 
@@ -37,7 +38,7 @@ class BotRequest(commands.Cog):
             ocr_text = self.get_request(f"{os.getenv('SERVER_URL')}?url={url}")
             text_info = self.get_request(f"{os.getenv('SERVER_URL')}?text={ocr_text}")
             print(text_info)
-
+            return
             ### img analysis
             # get image data
             response = requests.get(url)
