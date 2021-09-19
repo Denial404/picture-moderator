@@ -13,32 +13,26 @@ def detect_text_uri(uri):
     #   text: { 1st thing}
     #    words: [{}{}{}{}]
     # }
-
+    print(uri)
     response = client.text_detection(image=image)
     texts = response.text_annotations
     # print('Texts:')
     result = {"text": {}, "words": []}
     for i,text in enumerate(texts):
         if i == 0: 
-            obj = {}
-            obj[text.description] = []
+            result["text"]["description"] = text.description
+            result["text"]["vertices"] = []
+
             for vertex in text.bounding_poly.vertices:
-                obj[text.description].append((vertex.x, vertex.y))
-            result["text"] = obj
+                result["text"]["vertices"].append((vertex.x, vertex.y))
         else:
             obj = {}
-            obj[text.description] = []
+            obj["description"] = text.description
+            obj["vertices"] = []
+
             for vertex in text.bounding_poly.vertices:
-                obj[text.description].append((vertex.x, vertex.y))
+                obj["vertices"].append((vertex.x, vertex.y))
             result["words"].append(obj)
-        
-    # for text in texts:
-    #     obj = {}
-    #     vertices = []
-    #     for vertex in text.bounding_poly.vertices:
-    #         vertices.append((vertex.x, vertex.y))
-    #     obj[text.description] = vertices
-    #     result.append(obj)
 
     if response.error.message:
         raise Exception(

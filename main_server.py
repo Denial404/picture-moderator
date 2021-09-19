@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify
-from threading import Thread
-from main_bot import client
+from better_profanity import profanity
 # external functions
 from server.ocr import detect_text_uri
 import server.text_analysis as ta
-
-import os
+import nltk
 
 app = Flask(__name__)
 
@@ -16,7 +14,8 @@ def home():
 @app.route('/ocr', methods=["GET"])
 def ocr():
     url = request.args.get("url", None)
-    return jsonify(detect_text_uri(url))
+    res = detect_text_uri(url)
+    return jsonify(res)
 
 @app.route('/pic-analysis', methods=["GET"])
 def pic_analysis():
@@ -27,12 +26,18 @@ def pic_analysis():
 @app.route("/analyze-text", methods=["GET"])
 def analyze_text():
     text = request.args.get('text')
+    bad = profanity.contains_profanity(text)
     analysis = {
         'text': text,
-        'scores': ta.sentiment(text)
+        'scores': ta.sentiment(text),
+        'profanity': bad
     }
     return jsonify({'analysis': analysis})
 
+def server_start():
+    nltk.downloader.download('vader_lexicon')
+    nltk.downloader.download('stopwords')
+    app.run(debug=True)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    server_start()
