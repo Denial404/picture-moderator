@@ -67,7 +67,7 @@ def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
     return censoredImagePath
 
 def pic_analysis(nsfw_path, sfw_path):
-    detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
+    detector = NudeDetector("base")  # detector = NudeDetector('base') for the "base" version of detector.
     detector_json = detector.detect(nsfw_path)
 
     result_path = censorImage(detector_json, nsfw_path, sfw_path)
@@ -132,7 +132,7 @@ class BotRequest(commands.Cog):
             nsfwImagePath = "nsfw.png"
             # save nsfw image
             img.save(nsfwImagePath)
-            sfwImagePath = "cross.png"
+            sfwImagePath = "cat.png"
 
             # sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
             sfw_path = pic_analysis(nsfwImagePath, sfwImagePath)
