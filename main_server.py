@@ -23,11 +23,5 @@ def pic_analysis():
     url = request.args.get("nsfw-url", None)
     return url
 
-def server_start():
-    # t = Thread(target=run)
-    # t.start()
-    app.run(debug=True)
-
-
 if __name__ == "__main__":
-    server_start()
+    app.run(debug=True)
