@@ -4,15 +4,16 @@ from nudenet import NudeDetector
 
 class NsfwArea:
     def __init__(self, bounds, label, score):
-        self.y_min = bounds[0]
-        self.x_min = bounds[1]
-        self.y_max = bounds[2]
-        self.x_max = bounds[3]
+        self.y_min = bounds[1]
+        self.x_min = bounds[0]
+        self.y_max = bounds[3]
+        self.x_max = bounds[2]
         self.label = label
         self.score = score
 
 def getNsfwAreas(nudeResults):
     nsfwAreas = []
+    print(nudeResults)
     for nsfwArea in nudeResults:
         nsfwAreas.append(NsfwArea(nsfwArea["box"],
                                   nsfwArea["label"],
@@ -40,7 +41,7 @@ def censorImage(results, nsfwImagePath, sfwImagePath = ""):
 
     x = nsfwImagePath.split("/")
     del x[-1]
-    censoredImagePath = "/".join(x) + "/sfw_" + nsfwImagePath.split("/")[-1]
+    censoredImagePath = "sfw_" + nsfwImagePath
 
     img.save(censoredImagePath)
 

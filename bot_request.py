@@ -36,10 +36,10 @@ class BotRequest(commands.Cog):
 
             ### text analysis
             print(f"{os.getenv('SERVER_URL')}?url={url}")
-            ocr_text = self.get_request(f"{os.getenv('SERVER_URL')}?url={url}")
-            text_info = self.get_request(f"{os.getenv('SERVER_URL')}?text={ocr_text}")
-            print(text_info)
-            return
+            #ocr_text = self.get_request(f"{os.getenv('SERVER_URL')}?url={url}")
+            #text_info = self.get_request(f"{os.getenv('SERVER_URL')}?text={ocr_text}")
+            #print(text_info)
+            #return
             ### img analysis
             # get image data
             response = requests.get(url)
@@ -47,9 +47,10 @@ class BotRequest(commands.Cog):
             imagePath = "nsfw.png"
             # save nsfw image
             img.save(imagePath)
+            sfwImagePath = "sfw_image.jpeg"
 
-
-            sfw_path = cen.censorImage(self.detector, imagePath, "")
+            detectingObject = self.detector.detect(imagePath)
+            sfw_path = cen.censorImage(detectingObject, imagePath, sfwImagePath)
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)
