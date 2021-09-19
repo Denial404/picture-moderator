@@ -4,6 +4,7 @@ import requests
 from io import BytesIO
 import discord
 from discord.ext import commands
+from better_profanity import profanity
 import os
 
 
@@ -45,9 +46,14 @@ class BotRequest(commands.Cog):
             ocr_text = req["text"]
             ocr_words = req["words"]
             print(ocr_text, ocr_words)
-            
+
+            #Sentient analysis
             text_info = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
 
+            ocrResults = []
+            for ocr_word in ocr_words:
+                if profanity.contains_profanity(ocr_word["description"]):
+                    ocrResults.append(ocr_word)
 
             ### img analysis
             # get image data
@@ -58,7 +64,11 @@ class BotRequest(commands.Cog):
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
 
-            sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
+            if len(ocrResults) == 0:
+                sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
+            else:
+                sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis/{ocrResults}?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
+
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)

@@ -27,8 +27,8 @@ def getNsfwAreas(results, censorImage):
                                       True))
     else:
         for word in results:
-            nsfwAreas.append(NsfwArea(word["WHEN"],
-                                      "word",
+            nsfwAreas.append(NsfwArea(word["vertices"],
+                                      word["description"],
                                       0,
                                       False))
 
@@ -52,8 +52,6 @@ def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
 
                 img.paste(sfwImage, offset, mask=sfwImage)
 
-    x = nsfwImagePath.split("/")
-    del x[-1]
     censoredImagePath = "sfw_" + nsfwImagePath
 
     img.save(censoredImagePath)
