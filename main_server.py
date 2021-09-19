@@ -1,12 +1,9 @@
 from flask import Flask, request, jsonify
-from threading import Thread
-from main_bot import client
 from better_profanity import profanity
 # external functions
 from server.ocr import detect_text_uri
 import server.text_analysis as ta
-import json
-import os
+import nltk
 
 app = Flask(__name__)
 
@@ -38,4 +35,6 @@ def analyze_text():
     return jsonify({'analysis': analysis})
 
 if __name__ == "__main__":
+    nltk.downloader.download('vader_lexicon')
+    nltk.downloader.download('stopwords')
     app.run(debug=True)
