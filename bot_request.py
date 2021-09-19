@@ -26,7 +26,7 @@ class BotRequest(commands.Cog):
         await ctx.send(pic_info)
 
     @commands.command(name='ppp')
-    async def ppp(self, ctx, link=None):
+    async def image_analyze(self, ctx, link=None):
         await ctx.channel.purge(limit=1)
         async with ctx.typing():
             url = link if link else ctx.message.attachments[0].url

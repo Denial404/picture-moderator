@@ -3,7 +3,7 @@ from threading import Thread
 from main_bot import client
 # external functions
 from server.ocr import detect_text_uri
-from server.censoring import censorImage
+import server.censoring as cen
 
 import os
 
