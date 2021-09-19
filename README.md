@@ -9,7 +9,7 @@ Made @ Hack the North 2021
 ![cool pic](cat.png)
 
 ### Using this Discord Bot
-- Message adsfasdf to invite picture-police to your server.
+- Message one of our members to invite picture-police to your server.
 
 # Usage
 
