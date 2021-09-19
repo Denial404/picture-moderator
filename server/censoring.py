@@ -57,3 +57,4 @@ def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
     censoredImagePath = "sfw_" + nsfwImagePath
 
     img.save(censoredImagePath)
+    return censoredImagePath

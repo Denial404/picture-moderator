@@ -46,10 +46,8 @@ class BotRequest(commands.Cog):
             ocr_words = req["words"]
             print(ocr_text, ocr_words)
             
-            req2 = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
+            text_info = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
 
-
-            print(req2)
 
             ### img analysis
             # get image data
@@ -70,16 +68,20 @@ class BotRequest(commands.Cog):
             # positive
             if text_info['analysis']['scores']['pos'] >= 60:
                 embed.add_field(name='Positivity',
-                            value='✅')
+                            value='✅',
+                             inline=True)
             else:
                 embed.add_field(name='Positivity',
-                                value='❌')
+                                value='❌', 
+                                inline=True)
             # profanity
-            if Bool(text_info['analysis']['profanity']):
-                embed.add_field(name='Profanity',
-                                value='✅')
+            if bool(text_info['analysis']['profanity']):
+                embed.add_field(name='SFW?',
+                                value='🤬', 
+                                inline=True)
             else:
-                embed.add_field(name='Profanity',
-                                value='❌')
-            await ctx.send(embed)
+                embed.add_field(name='SFW?',
+                                value='👌', 
+                                inline=True)
+            await ctx.send(embed=embed)
 
