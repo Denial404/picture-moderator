@@ -6,7 +6,7 @@ Made @ Hack the North 2021
 
 ## A dedicated discord bot to censor vulgar images with something a little more wholesome.
 
-![cool pic](./src/res/myman.png)
+![cool pic](cat.png)
 
 ### Using this Discord Bot
 - Message adsfasdf to invite picture-police to your server.
