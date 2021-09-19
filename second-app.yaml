@@ -1,4 +1,5 @@
 runtime: python39
 service: my-second-app
 env: flex
+entrypoint: gunicorn "main_server:app"
 instance_class: F4_1G

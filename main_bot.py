@@ -36,6 +36,10 @@ async def test(ctx):
     await ctx.send('test')
 
 # run
-if __name__ == "__main__":
+def bot_start():
     print("hi", os.getenv('BOT_TOKEN'))
     client.run(os.getenv('BOT_TOKEN'))
+
+if __name__ == "__main__":
+    bot_start()
+
