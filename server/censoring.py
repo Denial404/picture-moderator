@@ -21,10 +21,10 @@ def getNudeAreas(nudeResults):
     return nudeAreas
 
 def censorImage(nsfwImagePath, sfwImagePath = ""):
-    detector = NudeDetector('base')  # detector = NudeDetector('base') for the "base" version of detector.
+    detector = NudeDetector() # detector = NudeDetector('base') for the "base" version of detector.
     nudeResults = detector.detect(nsfwImagePath)
-    classifier = NudeClassifier()
-    pokemon = classifier.classify(nsfwImagePath)
+    #classifier = NudeClassifier()
+    #pokemon = classifier.classify(nsfwImagePath)
 
     nudeAreas = getNudeAreas(nudeResults)
 
