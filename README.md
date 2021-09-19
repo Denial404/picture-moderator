@@ -4,7 +4,7 @@
 
 Made @ Hack the North 2021
 
-## A dedicated discord bot to censor vulgar images with something a little more wholesome.
+## A dedicated discord bot to censor vulgar images with something a little more wholesome:
 
 ![cool pic](cat.png)
 
@@ -17,13 +17,16 @@ Made @ Hack the North 2021
 2. The bot will instantly pull the image from the chat and analyze the image for inappropriate material (profanity, nudity, etc.)
 3. If the image is completely safe, no changes! Otherwise, the NSFW sections will be covered by some kittens.
 
-<br>
+# Examples
 
-> Potentially NSFW Image
-![NSFW](picture)
+> Potentially NSFW Images
+![NSFW](./readme_images/sfw-1.png) 
+![NSFW](./readme_images/sfw-2.png) 
+![NSFW](./readme_images/sfw-anime.png) 
 
 > Image of Profanity
-![Profanity](picture)
+![Profanity](./readme_images/profanity-1.png) 
+![Profanity](./readme_images/profanity-2.png)
 
 # Features
 
