@@ -14,7 +14,9 @@ class BotRequest(commands.Cog):
 
     def get_request(self, url):
         # server url
+        print("URL", url)
         res = requests.get(url)
+   
         res_content = res.json()
         print("GET_REQUEST", res_content)
         return res_content
@@ -64,10 +66,11 @@ class BotRequest(commands.Cog):
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
             
+            ocrDict = {"data": ocrResults}
             if len(ocrResults) == 0:
-                sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
+                sfw_path = self.get_request(f'http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
             else:
-                sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis/{json.dumps(ocrDict)}?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
+                sfw_path = self.get_request(f'http://127.0.0.1:5000/pic-analysis/{json.dumps(ocrDict)}?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
 
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
