@@ -23,5 +23,10 @@ def pic_analysis():
     url = request.args.get("nsfw-url", None)
     return url
 
+@app.route('/sent_analysis', methods=["GET"])
+def sent_analysis():
+    pass
+
+
 if __name__ == "__main__":
     app.run(debug=True)

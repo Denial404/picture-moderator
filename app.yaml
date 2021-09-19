@@ -1,5 +1,4 @@
 runtime: python39
-service: my-first-app
-env: flex
-entrypoint: gunicorn "main_bot:bot_start()"
+service: flask-server
+entrypoint: gunicorn -b :8080 "main_server:app"
 instance_class: F4_1G
