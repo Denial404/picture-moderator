@@ -13,9 +13,8 @@ class BotRequest(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    def get_request(self):
+    def get_request(self, url):
         # server url
-        url = 'https://endless-orb-325023.ue.r.appspot.com/nude-net'
         res = requests.get(url)
         res_content = json.loads(res.content)
         return res_content
@@ -23,8 +22,8 @@ class BotRequest(commands.Cog):
     @commands.command(name='info', aliases=['pp', 'pipo'])
     async def info(self, ctx):
         async with ctx.typing():
-            a = self.get_request()
-        await ctx.send(a)
+            pic_info = self.get_request('https://endless-orb-325023.ue.r.appspot.com/nude-net')
+        await ctx.send(pic_info)
 
     @commands.command(name='ppp')
     async def ppp(self, ctx):
@@ -32,9 +31,11 @@ class BotRequest(commands.Cog):
         async with ctx.typing():
             url = ctx.message.attachments[0].url
             #print(url)
+            # get image data
             response = requests.get(url)
             img = Image.open(BytesIO(response.content))
             imagePath = "nsfw.png"
+            # save nsfw image
             img.save(imagePath)
 
             detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
