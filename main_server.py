@@ -6,6 +6,7 @@ from nudenet import NudeDetector
 from server.ocr import detect_text_uri
 import server.text_analysis as ta
 import server.censoring as cen
+import json as json
 
 app = Flask(__name__)
 detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
@@ -29,6 +30,8 @@ def pic_analysis(detector_json):
     sfw_path = request.args.get("sfw_path", None)
     if detector_json is None:
         detector_json = detector.detect(nsfw_path)
+    else:
+        detector_json = json.loads(detector_json)
     result_path = cen.censorImage(detector_json, nsfw_path, sfw_path)
     print("PIC-ANALYSIS", jsonify({"path": result_path}))
     return jsonify({"path": result_path})
