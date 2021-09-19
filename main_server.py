@@ -43,10 +43,7 @@ def analyze_text():
     }
     return jsonify({'analysis': analysis})
 
-def server_start():
-    nltk.downloader.download('vader_lexicon')
-    nltk.downloader.download('stopwords')
-    app.run(debug=True)
 
 if __name__ == "__main__":
-    server_start()
+    # gunicorn will not access this
+    app.run(debug=True)
