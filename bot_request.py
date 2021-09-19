@@ -93,135 +93,23 @@ class BotRequest(commands.Cog):
             url = link if link else ctx.message.attachments[0].url
 
             ### text analysis
+            # site = "http://127.0.0.1:5000/"
+            site = "https://flask-server-dot-endless-orb-325023.ue.r.appspot.com/"
 
-            # req = self.get_request(f"http://127.0.0.1:5000/ocr?url={url}")
-            # ocr_text = req["text"]
-            # ocr_words = req["words"]
-            # req2 = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
-
-            # print(ocr_text, ocr_words)
-            # print(req2)
-
-            req = {
-                "text": {
-                    "description": "Fuck this shitty ass game bro this jungler is so bad look\nat him man going from blue buff to red buff to krugs to\nraptors to wolves gromp permafarming stupid ass kid\n",
-                    "vertices": [
-                        [
-                            20,
-                            18
-                        ],
-                        [
-                            1563,
-                            18
-                        ],
-                        [
-                            1563,
-                            243
-                        ],
-                        [
-                            20,
-                            243
-                        ]
-                    ]
-                },
-                "words": [
-                    {
-                        "description": "Fuck",
-                        "vertices": [
-                            [
-                                24,
-                                18
-                            ],
-                            [
-                                153,
-                                18
-                            ],
-                            [
-                                153,
-                                63
-                            ],
-                            [
-                                24,
-                                63
-                            ]
-                        ]
-                    },
-                    {
-                        "description": "this",
-                        "vertices": [
-                            [
-                                174,
-                                18
-                            ],
-                            [
-                                267,
-                                18
-                            ],
-                            [
-                                267,
-                                63
-                            ],
-                            [
-                                174,
-                                63
-                            ]
-                        ]
-                    },
-                    {
-                        "description": "shitty",
-                        "vertices": [
-                            [
-                                292,
-                                18
-                            ],
-                            [
-                                435,
-                                18
-                            ],
-                            [
-                                435,
-                                75
-                            ],
-                            [
-                                292,
-                                75
-                            ]
-                        ]
-                    },
-                    {
-                        "description": "ass",
-                        "vertices": [
-                            [
-                                456,
-                                30
-                            ],
-                            [
-                                549,
-                                30
-                            ],
-                            [
-                                549,
-                                63
-                            ],
-                            [
-                                456,
-                                63
-                            ]
-                        ]
-                    },
-                ]
-            }
+            req = self.get_request(f"{site}ocr?url={url}")
             ocr_text = req["text"]
             ocr_words = req["words"]
-            print(ocr_text['description'])
+
             #Sentient analysis
-            # text_info = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
+            try:
+                text_info = self.get_request(f"{site}analyze-text?text={ocr_text['description']}")
+            except:
+                print("penis")
 
             ocrResults = []
             for ocr_word in ocr_words:
                 if profanity.contains_profanity(ocr_word["description"]):
                     ocrResults.append(ocr_word)
-                    print("POGGERS")
 
             ### img analysis
             # get image data
@@ -230,13 +118,12 @@ class BotRequest(commands.Cog):
             nsfwImagePath = "nsfw.png"
             # save nsfw image
             img.save(nsfwImagePath)
-            sfwImagePath = "duck.png"
+            sfwImagePath = "cross.png"
 
-            sfw_path = self.get_request(f'http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
+            sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
 
             if len(ocrResults) != 0:
                 sfw_path = censorImage(ocrResults, sfw_path, sfwImagePath, False)
-                print("PENIS")
 
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
@@ -245,22 +132,27 @@ class BotRequest(commands.Cog):
             embed = discord.Embed(title='Photo Police', colour=0xf6dae4)
             embed.set_author(name=f'{ctx.author.display_name}')
             # positive
-            if text_info['analysis']['scores']['pos'] >= 60:
-                embed.add_field(name='Positivity',
-                            value='✅',
-                             inline=True)
-            else:
-                embed.add_field(name='Positivity',
-                                value='❌',
+
+            try:                
+                if text_info['analysis']['scores']['pos'] >= 60:
+                    embed.add_field(name='Positivity',
+                                value='✅',
                                 inline=True)
-            # profanity
-            if bool(text_info['analysis']['profanity']):
-                embed.add_field(name='SFW?',
-                                value='🤬',
-                                inline=True)
-            else:
-                embed.add_field(name='SFW?',
-                                value='👌',
-                                inline=True)
+                else:
+                    embed.add_field(name='Positivity',
+                                    value='❌',
+                                    inline=True)
+                # profanity
+                if bool(text_info['analysis']['profanity']):
+                    embed.add_field(name='SFW?',
+                                    value='🤬',
+                                    inline=True)
+                else:
+                    embed.add_field(name='SFW?',
+                                    value='👌',
+                                    inline=True)
+            except:
+                print("penis")
+
             await ctx.send(embed=embed)
 

@@ -1,4 +1,5 @@
 runtime: python39
 service: flask-server
-# entrypoint: gunicorn -b :8080 "main_server:server_start()"
+entrypoint: gunicorn -b :8080 --preload "main:app"
 instance_class: F4_1G
+

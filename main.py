@@ -8,6 +8,9 @@ import server.text_analysis as ta
 import server.censoring as cen
 import json as json
 
+nltk.downloader.download('vader_lexicon')
+nltk.downloader.download('stopwords')
+
 app = Flask(__name__)
 detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
 
@@ -50,8 +53,8 @@ def analyze_text():
     return jsonify({'analysis': analysis})
 
 
+
 if __name__ == "__main__":
     # gunicorn will not access this
-    nltk.downloader.download('vader_lexicon')
-    nltk.downloader.download('stopwords')
+
     app.run(debug=True)
