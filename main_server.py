@@ -21,16 +21,17 @@ def ocr():
     res = detect_text_uri(url)
     return jsonify(res)
 
-@app.route('/pic-analysis', methods=["GET"])
-def pic_analysis():
+@app.route('/pic-analysis', methods=["GET"], defaults={'detector_json': None})
+@app.route('/pic-analysis/<detector_json>', methods=["GET"])
+def pic_analysis(detector_json):
     print("PIC-ANALSIS, BEGINNING")
     nsfw_path = request.args.get("nsfw_path", None)
     sfw_path = request.args.get("sfw_path", None)
-    detectorJson = detector.detect(nsfw_path)
-    result_path = cen.censorImage(detectorJson, nsfw_path, sfw_path)
+    if detector_json is None:
+        detector_json = detector.detect(nsfw_path)
+    result_path = cen.censorImage(detector_json, nsfw_path, sfw_path)
     print("PIC-ANALYSIS", jsonify({"path": result_path}))
     return jsonify({"path": result_path})
-
 
 @app.route("/analyze-text", methods=["GET"])
 def analyze_text():
