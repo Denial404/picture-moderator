@@ -33,11 +33,11 @@ def censorImage(results, nsfwImagePath, sfwImagePath = ""):
                 sfwImage = Image.open(sfwImagePath)
 
                 size = nsfwArea.x_max - nsfwArea.x_min, nsfwArea.y_max - nsfwArea.y_min
-                sfwImage.resize(size)
+                sfwImage = sfwImage.resize(size)
 
                 offset = nsfwArea.x_min, nsfwArea.y_min
 
-                img.paste(sfwImage, offset)
+                img.paste(sfwImage, offset, mask=sfwImage)
 
     x = nsfwImagePath.split("/")
     del x[-1]
