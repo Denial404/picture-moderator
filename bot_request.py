@@ -2,9 +2,6 @@ import json
 from PIL import Image
 import requests
 from io import BytesIO
-from nudenet import NudeDetector
-from nudenet import NudeClassifier
-import server.censoring as cen
 import discord
 from discord.ext import commands
 import os
@@ -13,7 +10,6 @@ import os
 class BotRequest(commands.Cog):
     def __init__(self, client):
         self.client = client
-        self.detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
 
     def get_request(self, url):
         # server url
@@ -61,8 +57,7 @@ class BotRequest(commands.Cog):
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
 
-            detectingObject = self.detector.detect(nsfwImagePath)
-            sfw_path = cen.censorImage(detectingObject, nsfwImagePath, sfwImagePath)
+            sfw_path = self.get_request(f"{os.getenv('SERVER_URL')}/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)

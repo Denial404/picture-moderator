@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
 from better_profanity import profanity
+import nltk
+from nudenet import NudeDetector
 # external functions
 from server.ocr import detect_text_uri
 import server.text_analysis as ta
-import nltk
+import server.censoring as cen
 
 app = Flask(__name__)
+detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
+
 
 @app.route('/')
 def home():
@@ -19,8 +23,10 @@ def ocr():
 
 @app.route('/pic-analysis', methods=["GET"])
 def pic_analysis():
-    url = request.args.get("url", None)
-    return url
+    nsfw_path = request.args.get("nsfw_path", None)
+    sfw_path = request.args.get("sfw_path", None)
+    result_path = cen.censorImage(detector, nsfw_path, sfw_path)
+    return result_path
 
 
 @app.route("/analyze-text", methods=["GET"])
