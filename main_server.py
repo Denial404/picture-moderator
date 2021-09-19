@@ -3,7 +3,7 @@ from threading import Thread
 from main_bot import client
 # external functions
 from server.ocr import detect_text_uri
-from server.censoring import censorImage
+import server.censoring as cen
 
 import os
 
@@ -22,6 +22,11 @@ def ocr():
 def pic_analysis():
     url = request.args.get("nsfw-url", None)
     return url
+
+@app.route('/sent_analysis', methods=["GET"])
+def sent_analysis():
+    pass
+
 
 if __name__ == "__main__":
     app.run(debug=True)
