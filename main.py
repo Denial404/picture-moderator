@@ -1,8 +1,12 @@
 from flask import Flask, request, jsonify
+from PIL import Image
+import requests
+from io import BytesIO
 from better_profanity import profanity
 import nltk
 from nudenet import NudeDetector
 # external functions
+
 from server.ocr import detect_text_uri
 import server.text_analysis as ta
 import server.censoring as cen
@@ -29,15 +33,19 @@ def ocr():
 @app.route('/pic-analysis/<detector_json>', methods=["GET"])
 def pic_analysis(detector_json):
     print("PIC-ANALSIS, BEGINNING")
-    nsfw_path = request.args.get("nsfw_path", None)
+    url = request.args.get("nsfw_path", None)
     sfw_path = request.args.get("sfw_path", None)
+    response = requests.get(url)
+    nsfw_image = Image.open(BytesIO(response.content))
+
+    print(nsfw_image.filename)
     if detector_json is None:
-        detector_json = detector.detect(nsfw_path)
+        detector_json = detector.detect(nsfw_image.filename)
     else:
         detector_json = json.loads(detector_json)["data"]
         
     print("DETECTOR JSON", detector_json)
-    result_path = cen.censorImage(detector_json, nsfw_path, sfw_path)
+    result_path = cen.censorImage(detector_json, nsfw_image.filename, sfw_path)
     print("PIC-ANALYSIS", jsonify({"path": result_path}))
     return jsonify({"path": result_path})
 

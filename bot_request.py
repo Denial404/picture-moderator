@@ -74,7 +74,7 @@ class BotRequest(commands.Cog):
         # server url
         print("URL", url)
         res = requests.get(url)
-   
+        print("GET_REQUEST", res)
         res_content = res.json()
         print("GET_REQUEST", res_content)
         return res_content
@@ -92,9 +92,9 @@ class BotRequest(commands.Cog):
         async with ctx.typing():
             url = link if link else ctx.message.attachments[0].url
 
-            ### text analysis
-            # site = "http://127.0.0.1:5000/"
-            site = "https://flask-server-dot-endless-orb-325023.ue.r.appspot.com/"
+            # text analysis
+            site = "http://127.0.0.1:5000/"
+            # site = "https://flask-server-dot-endless-orb-325023.ue.r.appspot.com/"
 
             req = self.get_request(f"{site}ocr?url={url}")
             ocr_text = req["text"]
@@ -120,7 +120,8 @@ class BotRequest(commands.Cog):
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
 
-            sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
+            sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={url}&sfw_path={sfwImagePath}')["path"]
+
 
             if len(ocrResults) != 0:
                 sfw_path = censorImage(ocrResults, sfw_path, sfwImagePath, False)
