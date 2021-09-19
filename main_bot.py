@@ -1,6 +1,4 @@
-from server import server_start
 import os
-
 import discord
 from discord.ext import commands
 from bot_request import BotRequest
@@ -34,8 +32,7 @@ async def on_message(message):
 async def test(ctx):
     await ctx.send('test')
 
-
 # run
-server_start()
-
-client.run(os.getenv('BOT_TOKEN'))
+if __name__ == "__main__":
+    print("hi", os.getenv('BOT_TOKEN'))
+    client.run(os.getenv('BOT_TOKEN'))

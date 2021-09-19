@@ -1,2 +1,5 @@
 runtime: python39
+service: my-first-app
+env: flex
+entrypoint: gunicorn "main_bot:bot_start()"
 instance_class: F4_1G

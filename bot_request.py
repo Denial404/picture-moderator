@@ -2,8 +2,10 @@ import json
 from PIL import Image
 import requests
 from io import BytesIO
+from nudenet import NudeDetector
+from nudenet import NudeClassifier
 import server.censoring as cen
-
+import discord
 from discord.ext import commands
 
 
@@ -36,10 +38,8 @@ class BotRequest(commands.Cog):
             # save nsfw image
             img.save(imagePath)
 
-            async with ctx.typing():
-                res = self.get_request(f'https://endless-orb-325023.ue.r.appspot.com/pic-analysis?nsfw-url={imagePath}')
+            sfw_path = cen.censorImage(imagePath, "")
+            with open(sfw_path, "rb") as fh:
+                f = discord.File(fh, filename=sfw_path)
+            await ctx.send(file=f)
 
-            print(res)
-            print(cen.censorImage(imagePath, ""))
-
-        await ctx.send(url)
