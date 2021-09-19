@@ -59,11 +59,14 @@ async def on_message(message):
 async def test(ctx):
     await ctx.send('test')
 
+def bot_start():
+    print("hi", os.getenv('BOT_TOKEN'))
+    client.run(os.getenv('BOT_TOKEN'))
+
 # run
 if __name__ == "__main__":
     # pycharm getenv
-    print("hi", os.getenv('BOT_TOKEN'))
-    client.run(os.getenv('BOT_TOKEN'))
+    bot_start()
 
     # vscode get.environ 
     # print("hi", os.environ('BOT_TOKEN'))
