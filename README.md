@@ -20,13 +20,13 @@ Made @ Hack the North 2021
 # Examples
 
 > Potentially NSFW Images
-![NSFW](./readme_images/sfw-1.png) 
-![NSFW](./readme_images/sfw-2.png) 
-![NSFW](./readme_images/sfw-anime.png) 
+<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/sfw-1.png" width="512" height="384" />
+<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/sfw-2.png" width="500" height="750" />
+<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/sfw-anime.png" width="500" height="667" />
 
 > Image of Profanity
-![Profanity](./readme_images/profanity-1.png) 
-![Profanity](./readme_images/profanity-2.png)
+<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/profanity-1.png" />
+<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/profanity-2.png" width="500" height="500" />
 
 # Features
 
