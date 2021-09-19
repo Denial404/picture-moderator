@@ -217,7 +217,7 @@ class BotRequest(commands.Cog):
             ocr_words = req["words"]
             print(ocr_text['description'])
             #Sentient analysis
-            text_info = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
+            # text_info = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
 
             ocrResults = []
             for ocr_word in ocr_words:
@@ -232,11 +232,11 @@ class BotRequest(commands.Cog):
             # save nsfw image
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
+
+            sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
             
             if len(ocrResults) == 0:
-                sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
-            else:
-                sfw_path = censorImage(ocrResults, nsfwImagePath, sfwImagePath, False)
+                sfw_path = censorImage(ocrResults, sfw_path, sfwImagePath, False)
 
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
