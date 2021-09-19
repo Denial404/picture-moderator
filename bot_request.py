@@ -56,12 +56,13 @@ class BotRequest(commands.Cog):
             # get image data
             response = requests.get(url)
             img = Image.open(BytesIO(response.content))
-            imagePath = "nsfw.png"
+            nsfwImagePath = "nsfw.png"
             # save nsfw image
-            img.save(imagePath)
+            img.save(nsfwImagePath)
+            sfwImagePath = "cross.png"
 
-
-            sfw_path = cen.censorImage(self.detector, imagePath, "")
+            detectingObject = self.detector.detect(nsfwImagePath)
+            sfw_path = cen.censorImage(detectingObject, nsfwImagePath, sfwImagePath)
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)

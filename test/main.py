@@ -21,6 +21,7 @@ def nude_net():
 
     jsonResult = jsonify({"detector": detector, "classifier": pokemon})
 
+    sfwImage = ""
     print(cen.censorImage(detector, image, ""))
     return jsonResult
 
