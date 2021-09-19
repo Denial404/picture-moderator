@@ -9,7 +9,7 @@ import os
 
 from PIL import Image, ImageDraw
 from nudenet import NudeDetector
-# from nudenet import NudeClassifier
+from nudenet import NudeClassifier
 
 class NsfwArea:
     def __init__(self, bounds, label, score, censorImage = True):
@@ -72,6 +72,12 @@ def pic_analysis(nsfw_path, sfw_path):
 
     result_path = censorImage(detector_json, nsfw_path, sfw_path)
     return {"path": result_path}
+
+def classifyImage(url):
+    classifier = NudeClassifier()
+    result = classifier.classify(url)
+
+    return result["nsfw.png"]["safe"]
 
 
 class BotRequest(commands.Cog):
@@ -143,22 +149,34 @@ class BotRequest(commands.Cog):
             embed.set_author(name=f'{ctx.author.display_name}')
             # positive
 
+            # classifier
+            sfw_level = classifyImage(nsfwImagePath)
+            print("CLASSIFIER", sfw_level)
+
             try:                
-                if text_info['analysis']['scores']['pos'] >= 60:
-                    embed.add_field(name='Positivity',
-                                value='✅',
-                                inline=True)
-                else:
-                    embed.add_field(name='Positivity',
-                                    value='❌',
-                                    inline=True)
+                # if text_info['analysis']['scores']['pos'] >= 60:
+                #     embed.add_field(name='Positivity',
+                #                 value='✅',
+                #                 inline=True)
+                # else:
+                #     embed.add_field(name='Positivity',
+                #                     value='❌',
+                #                     inline=True)
                 # profanity
+                value = "⭐"   
+                value = value + value * round(sfw_level * 10 // 2)
+
+
+
+                embed.add_field(name='SFW',
+                                value=value,
+                                inline=True)
                 if bool(text_info['analysis']['profanity']):
-                    embed.add_field(name='SFW?',
+                    embed.add_field(name='Profanity?',
                                     value='🤬',
                                     inline=True)
                 else:
-                    embed.add_field(name='SFW?',
+                    embed.add_field(name='Profanity?',
                                     value='👌',
                                     inline=True)
             except:
