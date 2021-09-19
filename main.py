@@ -29,26 +29,6 @@ def ocr():
     res = detect_text_uri(url)
     return jsonify(res)
 
-@app.route('/pic-analysis', methods=["GET"], defaults={'detector_json': None})
-@app.route('/pic-analysis/<detector_json>', methods=["GET"])
-def pic_analysis(detector_json):
-    print("PIC-ANALSIS, BEGINNING")
-    url = request.args.get("nsfw_path", None)
-    sfw_path = request.args.get("sfw_path", None)
-    response = requests.get(url)
-    nsfw_image = Image.open(BytesIO(response.content))
-
-    print(nsfw_image.filename)
-    if detector_json is None:
-        detector_json = detector.detect(nsfw_image.filename)
-    else:
-        detector_json = json.loads(detector_json)["data"]
-        
-    print("DETECTOR JSON", detector_json)
-    result_path = cen.censorImage(detector_json, nsfw_image.filename, sfw_path)
-    print("PIC-ANALYSIS", jsonify({"path": result_path}))
-    return jsonify({"path": result_path})
-
 @app.route("/analyze-text", methods=["GET"])
 def analyze_text():
     text = request.args.get('text')

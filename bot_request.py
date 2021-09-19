@@ -66,6 +66,14 @@ def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
     img.save(censoredImagePath)
     return censoredImagePath
 
+def pic_analysis(nsfw_path, sfw_path):
+    detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
+    detector_json = detector.detect(nsfw_path)
+
+    result_path = censorImage(detector_json, nsfw_path, sfw_path)
+    return {"path": result_path}
+
+
 class BotRequest(commands.Cog):
     def __init__(self, client):
         self.client = client
@@ -93,8 +101,8 @@ class BotRequest(commands.Cog):
             url = link if link else ctx.message.attachments[0].url
 
             # text analysis
-            site = "http://127.0.0.1:5000/"
-            # site = "https://flask-server-dot-endless-orb-325023.ue.r.appspot.com/"
+            # site = "http://127.0.0.1:5000/"
+            site = "https://flask-server-dot-endless-orb-325023.ue.r.appspot.com/"
 
             req = self.get_request(f"{site}ocr?url={url}")
             ocr_text = req["text"]
@@ -120,8 +128,9 @@ class BotRequest(commands.Cog):
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
 
-            sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={url}&sfw_path={sfwImagePath}')["path"]
-
+            # sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
+            sfw_path = pic_analysis(nsfwImagePath, sfwImagePath)
+            sfw_path = sfw_path["path"]
 
             if len(ocrResults) != 0:
                 sfw_path = censorImage(ocrResults, sfw_path, sfwImagePath, False)
