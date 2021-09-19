@@ -20,13 +20,13 @@ Made @ Hack the North 2021
 # Examples
 
 > Potentially NSFW Images
-<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/sfw-1.png" width="512" height="384" />
-<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/sfw-2.png" width="500" height="750" />
-<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/sfw-anime.png" width="500" height="667" />
+<img src="https://github.com/Denial404/picture-police/blob/main/readme_images/sfw-1.png" width="512" height="384" />
+<img src="https://github.com/Denial404/picture-police/blob/main/readme_images/sfw-2.png" width="500" height="750" />
+<img src="https://github.com/Denial404/picture-police/blob/main/readme_images/sfw-anime.png" width="500" height="667" />
 
 > Image of Profanity
-<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/profanity-1.png" />
-<img src="https://github.com/Denial404/picture-police/blob/send-image/readme_images/profanity-2.png" width="500" height="500" />
+<img src="https://github.com/Denial404/picture-police/blob/main/readme_images/profanity-1.png" />
+<img src="https://github.com/Denial404/picture-police/blob/main/readme_images/profanity-2.png" width="500" height="500" />
 
 # Features
 
