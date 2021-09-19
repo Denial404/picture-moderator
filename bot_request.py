@@ -67,7 +67,7 @@ def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
     return censoredImagePath
 
 def pic_analysis(nsfw_path, sfw_path):
-    detector = NudeDetector("base")  # detector = NudeDetector('base') for the "base" version of detector.
+    detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
     detector_json = detector.detect(nsfw_path)
 
     result_path = censorImage(detector_json, nsfw_path, sfw_path)
@@ -145,7 +145,7 @@ class BotRequest(commands.Cog):
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)
             # setup embed
-            embed = discord.Embed(title='Photo Police', colour=0xf6dae4)
+            embed = discord.Embed(title='Picture Police', colour=0xf6dae4)
             embed.set_author(name=f'{ctx.author.display_name}')
             # positive
 
@@ -166,9 +166,7 @@ class BotRequest(commands.Cog):
                 value = "⭐"   
                 value = value + value * round(sfw_level * 10 // 2)
 
-
-
-                embed.add_field(name='SFW',
+                embed.add_field(name='SFW Rating',
                                 value=value,
                                 inline=True)
                 if bool(text_info['analysis']['profanity']):
