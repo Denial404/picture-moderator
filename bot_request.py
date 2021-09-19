@@ -15,6 +15,7 @@ class BotRequest(commands.Cog):
         # server url
         res = requests.get(url)
         res_content = res.json()
+        print("GET_REQUEST", res_content)
         return res_content
 
 
@@ -40,12 +41,14 @@ class BotRequest(commands.Cog):
             # print(ocr_text, ocr_words)
             # print(req2)
 
-            req = self.get_request(f"{os.getenv('SERVER_URL')}/ocr?url={url}")
+            req = self.get_request(f"http://127.0.0.1:5000/ocr?url={url}")
             ocr_text = req["text"]
             ocr_words = req["words"]
-            req2 = self.get_request(f"{os.getenv('SERVER_URL')}/analyze-text?text={ocr_text['description']}")
-
             print(ocr_text, ocr_words)
+            
+            req2 = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
+
+
             print(req2)
 
             ### img analysis
@@ -57,7 +60,7 @@ class BotRequest(commands.Cog):
             img.save(nsfwImagePath)
             sfwImagePath = "cross.png"
 
-            sfw_path = self.get_request(f"{os.getenv('SERVER_URL')}/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")
+            sfw_path = self.get_request(f"http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}")["path"]
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
             await ctx.send(file=f)
