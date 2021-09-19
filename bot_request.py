@@ -7,6 +7,64 @@ from discord.ext import commands
 from better_profanity import profanity
 import os
 
+from PIL import Image, ImageDraw
+from nudenet import NudeDetector
+# from nudenet import NudeClassifier
+
+class NsfwArea:
+    def __init__(self, bounds, label, score, censorImage = True):
+        if censorImage:
+            self.y_min = bounds[1]
+            self.x_min = bounds[0]
+            self.y_max = bounds[3]
+            self.x_max = bounds[2]
+        else:
+            self.y_min = bounds[0][1]
+            self.x_min = bounds[0][0]
+            self.y_max = bounds[2][1]
+            self.x_max = bounds[2][0]
+        self.label = label
+        self.score = score
+
+def getNsfwAreas(results, censorImage):
+    nsfwAreas = []
+    if censorImage:
+        for nsfwArea in results:
+            nsfwAreas.append(NsfwArea(nsfwArea["box"],
+                                      nsfwArea["label"],
+                                      nsfwArea["score"],
+                                      True))
+    else:
+        for word in results:
+            nsfwAreas.append(NsfwArea(word["vertices"],
+                                      word["description"],
+                                      0,
+                                      False))
+
+    return nsfwAreas
+
+def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
+    nsfwAreas = getNsfwAreas(results, censorImage)
+
+    with Image.open(nsfwImagePath) as img:
+        draw = ImageDraw.Draw(img)
+        for nsfwArea in nsfwAreas:
+            if (sfwImagePath == ""):
+                draw.rectangle([nsfwArea.x_min, nsfwArea.y_min, nsfwArea.x_max, nsfwArea.y_max], '#0f0f0f80', '#0f0f0f80', 2)
+            else:
+                sfwImage = Image.open(sfwImagePath)
+
+                size = nsfwArea.x_max - nsfwArea.x_min, nsfwArea.y_max - nsfwArea.y_min
+                sfwImage = sfwImage.resize(size)
+
+                offset = nsfwArea.x_min, nsfwArea.y_min
+
+                img.paste(sfwImage, offset, mask=sfwImage)
+
+    censoredImagePath = "sfw_" + nsfwImagePath
+
+    img.save(censoredImagePath)
+    return censoredImagePath
 
 class BotRequest(commands.Cog):
     def __init__(self, client):
@@ -44,11 +102,122 @@ class BotRequest(commands.Cog):
             # print(ocr_text, ocr_words)
             # print(req2)
 
-            req = self.get_request(f"http://127.0.0.1:5000/ocr?url={url}")
+            #req = self.get_request(f"http://127.0.0.1:5000/ocr?url={url}")
+            #ocr_text = req["text"]
+            #ocr_words = req["words"]
+            #print(ocr_text, ocr_words)
+            req = {
+                "text": {
+                    "description": "Fuck this shitty ass game bro this jungler is so bad look\nat him man going from blue buff to red buff to krugs to\nraptors to wolves gromp permafarming stupid ass kid\n",
+                    "vertices": [
+                        [
+                            20,
+                            18
+                        ],
+                        [
+                            1563,
+                            18
+                        ],
+                        [
+                            1563,
+                            243
+                        ],
+                        [
+                            20,
+                            243
+                        ]
+                    ]
+                },
+                "words": [
+                    {
+                        "description": "Fuck",
+                        "vertices": [
+                            [
+                                24,
+                                18
+                            ],
+                            [
+                                153,
+                                18
+                            ],
+                            [
+                                153,
+                                63
+                            ],
+                            [
+                                24,
+                                63
+                            ]
+                        ]
+                    },
+                    {
+                        "description": "this",
+                        "vertices": [
+                            [
+                                174,
+                                18
+                            ],
+                            [
+                                267,
+                                18
+                            ],
+                            [
+                                267,
+                                63
+                            ],
+                            [
+                                174,
+                                63
+                            ]
+                        ]
+                    },
+                    {
+                        "description": "shitty",
+                        "vertices": [
+                            [
+                                292,
+                                18
+                            ],
+                            [
+                                435,
+                                18
+                            ],
+                            [
+                                435,
+                                75
+                            ],
+                            [
+                                292,
+                                75
+                            ]
+                        ]
+                    },
+                    {
+                        "description": "ass",
+                        "vertices": [
+                            [
+                                456,
+                                30
+                            ],
+                            [
+                                549,
+                                30
+                            ],
+                            [
+                                549,
+                                63
+                            ],
+                            [
+                                456,
+                                63
+                            ]
+                        ]
+                    },
+                ]
+            }
             ocr_text = req["text"]
             ocr_words = req["words"]
-            print(ocr_text, ocr_words)
-
+            print(ocr_text['description'])
             #Sentient analysis
             text_info = self.get_request(f"http://127.0.0.1:5000/analyze-text?text={ocr_text['description']}")
 
@@ -70,7 +239,7 @@ class BotRequest(commands.Cog):
             if len(ocrResults) == 0:
                 sfw_path = self.get_request(f'http://127.0.0.1:5000/pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
             else:
-                sfw_path = self.get_request(f'http://127.0.0.1:5000/pic-analysis/{json.dumps(ocrDict)}?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
+                sfw_path = censorImage(ocrResults, nsfwImagePath, sfwImagePath, False)
 
             with open(sfw_path, "rb") as fh:
                 f = discord.File(fh, filename=sfw_path)
@@ -85,16 +254,16 @@ class BotRequest(commands.Cog):
                              inline=True)
             else:
                 embed.add_field(name='Positivity',
-                                value='❌', 
+                                value='❌',
                                 inline=True)
             # profanity
             if bool(text_info['analysis']['profanity']):
                 embed.add_field(name='SFW?',
-                                value='🤬', 
+                                value='🤬',
                                 inline=True)
             else:
                 embed.add_field(name='SFW?',
-                                value='👌', 
+                                value='👌',
                                 inline=True)
             await ctx.send(embed=embed)
 
