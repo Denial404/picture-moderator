@@ -63,6 +63,7 @@ async def test(ctx):
 def bot_start():
     print("hi", os.getenv('BOT_TOKEN'))
     client.run(os.getenv('BOT_TOKEN'))
+    # client.run(os.environ('BOT_TOKEN'))
 
 # run
 if __name__ == "__main__":
@@ -71,4 +72,3 @@ if __name__ == "__main__":
 
     # vscode get.environ 
     # print("hi", os.environ('BOT_TOKEN'))
-    # client.run(os.environ('BOT_TOKEN'))

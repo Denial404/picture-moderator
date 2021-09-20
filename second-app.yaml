@@ -1,4 +1,4 @@
 runtime: python39
 service: my-second-app
-entrypoint: gunicorn -b :8080 "main_bot:bot_start()"
+entrypoint: python3 main_bot.py
 instance_class: F4_1G
