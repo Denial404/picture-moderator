@@ -6,10 +6,14 @@ import discord
 from discord.ext import commands
 from better_profanity import profanity
 import os
-
 from PIL import Image, ImageDraw
 from nudenet import NudeDetector
 from nudenet import NudeClassifier
+from cloud_storage import upload_blob, download_blob
+import numpy as np
+
+bucket_name = "image_paths"
+
 
 class NsfwArea:
     def __init__(self, bounds, label, score, censorImage = True):
@@ -43,16 +47,17 @@ def getNsfwAreas(results, censorImage):
 
     return nsfwAreas
 
-def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
+def censorImage(results, nsfw_image_bytes, sfwImagePath = "", censorImage = True):
     nsfwAreas = getNsfwAreas(results, censorImage)
 
-    with Image.open(nsfwImagePath) as img:
+    with Image.open(BytesIO(nsfw_image_bytes)) as img:
         draw = ImageDraw.Draw(img)
         for nsfwArea in nsfwAreas:
-            if (sfwImagePath == ""):
+            if (sfwImagePath == ""): # 
                 draw.rectangle([nsfwArea.x_min, nsfwArea.y_min, nsfwArea.x_max, nsfwArea.y_max], '#0f0f0f80', '#0f0f0f80', 2)
             else:
-                sfwImage = Image.open(sfwImagePath)
+                sfw_image_bytes = download_blob(bucket_name, sfwImagePath)
+                sfwImage = Image.open(BytesIO(sfw_image_bytes))
 
                 size = nsfwArea.x_max - nsfwArea.x_min, nsfwArea.y_max - nsfwArea.y_min
                 sfwImage = sfwImage.resize(size)
@@ -61,23 +66,37 @@ def censorImage(results, nsfwImagePath, sfwImagePath = "", censorImage = True):
 
                 img.paste(sfwImage, offset, mask=sfwImage)
 
-    censoredImagePath = "sfw_" + nsfwImagePath
+    # censoredImagePath = "sfw_" + nsfw_image_bytes
 
-    img.save(censoredImagePath)
+    # img.save(censoredImagePath)
+
+    buf = BytesIO()
+    img.save(buf, format="PNG")
+    img_bytes = buf.getvalue()
+    censoredImagePath = "nsfw_censored"
+    upload_blob(bucket_name, img_bytes, "nsfw_censored", "image/png")
     return censoredImagePath
 
-def pic_analysis(nsfw_path, sfw_path):
-    detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
-    detector_json = detector.detect(nsfw_path)
+def pic_analysis(nsfw_path, sfwImagePath):
+    # download the images from cloud storage
+    nsfw_image_bytes = download_blob(bucket_name, nsfw_path) # returns the image downloaded as bytes
 
-    result_path = censorImage(detector_json, nsfw_path, sfw_path)
+    img =  Image.open(BytesIO(nsfw_image_bytes))
+    detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
+    detector_json = detector.detect(np.array(img))
+    print("CENSORED AREAS", detector_json)
+    # pass the nsfw_image (bytes) and sfw_path (the cat.png on cloud) 
+    result_path = censorImage(detector_json, nsfw_image_bytes, sfwImagePath) 
     return {"path": result_path}
 
-def classifyImage(url):
+def classifyImage(nsfw_path):
+    nsfw_image_bytes = download_blob(bucket_name, nsfw_path) # returns the image downloaded as bytes
+    img =  Image.open(BytesIO(nsfw_image_bytes))
+
     classifier = NudeClassifier()
-    result = classifier.classify(url)
-    print("CLASSIFIER", result)
-    return result["nsfw.png"]["safe"]
+    result = classifier.classify(np.array(img))
+    print(result)
+    return result[0]["safe"]
 
 
 class BotRequest(commands.Cog):
@@ -127,22 +146,32 @@ class BotRequest(commands.Cog):
 
             ### img analysis
             # get image data
-            response = requests.get(url)
-            img = Image.open(BytesIO(response.content))
-            nsfwImagePath = "nsfw.png"
-            # save nsfw image
-            img.save(nsfwImagePath)
-            sfwImagePath = "cat.png"
+            # response = requests.get(url)
+            # img = Image.open(BytesIO(response.content))
+            # nsfwImagePath = "nsfw.png"
+            # # save nsfw image
+            # img.save(nsfwImagePath)
+            # sfwImagePath = "cat.png"
+            ## -- revised version --
+            nsfwImagePath = "nsfw_image"
+            sfwImagePath = "sfw_image"
+            upload_blob(bucket_name, url, nsfwImagePath, "image/png")
 
             # sfw_path = self.get_request(f'{site}pic-analysis?nsfw_path={nsfwImagePath}&sfw_path={sfwImagePath}')["path"]
             sfw_path = pic_analysis(nsfwImagePath, sfwImagePath)
-            sfw_path = sfw_path["path"]
+            sfw_path = sfw_path["path"] # nsfw_censored on cloud storage
+            cennsored_image_bytes = download_blob(bucket_name, sfw_path) # download the censored images we just uploaded as bytes
 
             if len(ocrResults) != 0:
-                sfw_path = censorImage(ocrResults, sfw_path, sfwImagePath, False)
+                sfw_path = censorImage(ocrResults, cennsored_image_bytes, sfwImagePath, False)
 
-            with open(sfw_path, "rb") as fh:
-                f = discord.File(fh, filename=sfw_path)
+            final_image_bytes = download_blob(bucket_name, sfw_path)
+            final_image = Image.open(BytesIO(final_image_bytes))
+
+            with BytesIO() as image_binary:
+                final_image.save(image_binary, "PNG")
+                image_binary.seek(0)
+                f = discord.File(fp=image_binary, filename="image.png")
             await ctx.send(file=f)
             # setup embed
             embed = discord.Embed(title='Picture Police', colour=0xf6dae4)

@@ -1,4 +1,6 @@
 import json
+from dotenv import load_dotenv
+load_dotenv()
 
 def detect_text_uri(uri):
     """Detects text in the file located in Google Cloud Storage or on the Web.
@@ -44,8 +46,9 @@ def detect_text_uri(uri):
     return result
     
 if __name__ == '__main__':
-    url = "https://cdn.vox-cdn.com/thumbor/cV8X8BZ-aGs8pv3D-sCMr5fQZyI=/1400x1400/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/19933026/image.png"
-    detect_text_uri(url)
+    url = "https://i.pinimg.com/564x/17/a3/8e/17a38eb8f4337f55bb7b4bb2995995ec.jpg"
+    result = detect_text_uri(url)
+    print("Result:", result)
 
 # {
 # text: 'text in image',
