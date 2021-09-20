@@ -2,3 +2,5 @@ runtime: python39
 service: my-second-app
 entrypoint: python3 main_bot.py
 instance_class: F4_1G
+env_variables:
+  BOT_TOKEN: ODg5MDMxMjg0MzgxMzI3NDUw.YUbU5w.Uvw5SxeN18j8jg0dV-tlOCw4wqc
