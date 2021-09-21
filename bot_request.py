@@ -183,7 +183,10 @@ class BotRequest(commands.Cog):
 
             try:                
                 value = "⭐"   
-                value = value + value * round(sfw_level * 10 // 2)
+                value = value * round(sfw_level * 10 // 2)
+
+                if not value:
+                    value = "⭐"  
 
                 embed.add_field(name='Image SFW',
                                 value=value,
