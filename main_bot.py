@@ -4,6 +4,7 @@ from discord.ext import commands
 from bot_request import BotRequest
 from dotenv import load_dotenv
 from pprint import pprint
+from main_bot_server import server
 
 load_dotenv()
 
@@ -61,6 +62,7 @@ async def test(ctx):
     await ctx.send('test')
 
 def bot_start():
+    server()
     print("hi", os.getenv('BOT_TOKEN'))
     client.run(os.getenv('BOT_TOKEN'))
     # client.run(os.environ('BOT_TOKEN'))
