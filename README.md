@@ -40,3 +40,4 @@ Made @ Hack the North 2021
 - Google App Engine
 - Natural Language Processing (NLP)
 - Text Natural Language Toolkit (NLTK) analysis
+- Google Cloud Storage
