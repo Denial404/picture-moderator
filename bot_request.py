@@ -1,4 +1,3 @@
-import json
 from PIL import Image
 import requests
 from io import BytesIO
@@ -11,7 +10,7 @@ from nudenet import NudeDetector
 from nudenet import NudeClassifier
 from cloud_storage import upload_blob, download_blob
 import numpy as np
-
+import cv2 
 bucket_name = "image_paths"
 
 
@@ -80,11 +79,26 @@ def censorImage(results, nsfw_image_bytes, sfwImagePath = "", censorImage = True
 def pic_analysis(nsfw_path, sfwImagePath):
     # download the images from cloud storage
     nsfw_image_bytes = download_blob(bucket_name, nsfw_path) # returns the image downloaded as bytes
-
-    img =  Image.open(BytesIO(nsfw_image_bytes))
     detector = NudeDetector()  # detector = NudeDetector('base') for the "base" version of detector.
-    detector_json = detector.detect(np.array(img))
+
+    # -- this version works, but for some reason detections are less accurate --
+    # img =  Image.open(BytesIO(nsfw_image_bytes))
+    # numpyarr = np.array(img)
+    # detector_json = detector.detect(numpyarr)
+
+    # -- this versino works, but it fixes the less accurate problem -- 
+    numpyarr = np.array(bytearray(nsfw_image_bytes))
+    detector_json = detector.detect(cv2.imdecode(numpyarr, cv2.IMREAD_COLOR))
+    
+
+    # -- testing np.array --
     print("CENSORED AREAS", detector_json)
+    img =  Image.open(BytesIO(nsfw_image_bytes))
+    img.save("./irelia.png")
+    pokemon = detector.detect("./irelia.png")
+    print("IRELIA", pokemon)
+
+
     # pass the nsfw_image (bytes) and sfw_path (the cat.png on cloud) 
     result_path = censorImage(detector_json, nsfw_image_bytes, sfwImagePath) 
     return {"path": result_path}
