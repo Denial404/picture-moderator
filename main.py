@@ -32,7 +32,7 @@ def ocr():
 @app.route("/analyze-text", methods=["GET"])
 def analyze_text():
     profanity.load_censor_words(['coock', 'cock'])
-    text = request.args.get('text').trim()
+    text = request.args.get('text')
     bad = profanity.contains_profanity(text)
     analysis = {
         'text': text,
